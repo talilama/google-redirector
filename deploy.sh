@@ -54,6 +54,7 @@ gcloud run deploy $SERVICE_NAME \
     --region $REGION \
     --allow-unauthenticated \
     --set-env-vars "BACKEND_URL=$BACKEND_URL" \
+    --set-env-vars "VERIFICATION_HEADER=$VERIFICATION_HEADER" \
     --memory 512Mi \
     --cpu 1 \
     --concurrency 100 \
