@@ -18,7 +18,8 @@ import (
 
 func main() {
 	backendURL := getEnv("BACKEND_URL", "https://your-backend-server.com")
-
+	verificationHeader := getEnv("VERIFICATION_HEADER", "")
+	
 	target, err := url.Parse(backendURL)
 	if err != nil {
 		log.Fatalf("Failed to parse BACKEND_URL: %v", err)
@@ -47,6 +48,14 @@ func main() {
 
 	// WebSocket and HTTP handler
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// Check for verification header
+		if verificationHeader != "" {
+			if r.Header.Get(verificationHeader) == "" {
+				w.WriteHeader(http.StatusBadGateway)
+				w.Write([]byte("Bad Gateway"))
+				return
+			}
+		}
 		// Check if this is a WebSocket upgrade request
 		if isWebSocketRequest(r) {
 			handleWebSocket(w, r, target)
